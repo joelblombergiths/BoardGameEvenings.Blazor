@@ -1,0 +1,29 @@
+﻿@page "/Add"
+@attribute [Authorize]
+@inject HttpClient _Client
+@inject NavigationManager _Navigation
+
+<div class="@AlertClass">
+    <p>@ResultMessage</p>
+</div>
+
+<h2 class="m-5">I solemnly swear that I am up to no good</h2>
+
+<div class="container text-dark">
+    <div class="col-xl-5 col-md-8 mx-auto">
+        <EditForm Model="@EditEvent" class="bg-white rounded-5 p-5" OnValidSubmit="@Submit">
+            <DataAnnotationsValidator />
+            <div class="mb-4">
+                <label for="name" class="form-label">Name the event</label>
+                <InputText @bind-Value="@EditEvent.Name" class="form-control" id="name"></InputText>
+                <ValidationMessage For="@(() => EditEvent.Name)" class="text-danger"/>
+            </div>
+            <div class="mb-4">
+                <label for="date" class="form-label" htmlfor="date">Set the date</label>
+                <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="@EditEvent.Date" class="form-control" id="date"></InputDate>
+                <ValidationMessage For="@(() => EditEvent.Date)" class="text-danger" />
+            </div>
+            <button type="submit" class="btn btn-primary">Add Event</button>
+        </EditForm>
+    </div>
+</div>

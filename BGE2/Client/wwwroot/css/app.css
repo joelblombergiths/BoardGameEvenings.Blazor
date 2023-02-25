@@ -1,0 +1,30 @@
+body {
+    font-family: 'Source Code Pro', monospace;
+    background-color: #6f8496;
+    color: white;
+    text-align: center;
+    --bs-body-font-size: 2rem;
+}
+
+
+@media(min-width:991px) {
+    body {
+        --bs-body-font-size: 1rem;
+    }
+}
+
+
+.purpleHeader {
+    background-color: #693250;
+    color: white;
+}
+
+.navbar-brand {
+    background-color: #693250;
+}
+
+.navbar-toggle .icon-bar {
+    width: 50px !important;
+    height: 50px !important;
+    --bs-body-font-size: 2rem;
+}

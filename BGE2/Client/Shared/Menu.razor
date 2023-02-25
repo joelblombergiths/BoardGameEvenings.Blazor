@@ -1,0 +1,38 @@
+﻿@inject NavigationManager _Navigation
+
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+    <div class="container-fluid">
+        <NavLink href="" Match="NavLinkMatch.All" class="navbar-brand px-5 fw-bold">BGE</NavLink>
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navmenu"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+                aria-controls="navmenu">
+            <i class="fa-solid fa-bars fa-2xl"></i>
+        </button>
+    </div>
+    <div class="collapse navbar-collapse" id="navmenu">
+        <AuthorizeView>
+            <Authorized>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <NavLink class="nav-link text-nowrap" href="Add">Add Event</NavLink>
+                    </li>
+                    <li class="nav-item">
+                        <NavLink class="nav-link px-5 text-nowrap" href="#" @onclick="@(() => _Navigation.NavigateToLogout("authentication/logout", "/"))">Log out (@context.User.Identity?.Name)</NavLink>
+                    </li>
+                </ul>
+            </Authorized>
+            <NotAuthorized>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <NavLink class="nav-link px-5" href="#" @onclick="@(() => _Navigation.NavigateToLogin("authentication/login"))">Login</NavLink>
+                    </li>
+                </ul>
+            </NotAuthorized>
+        </AuthorizeView>
+    </div>
+</nav>
+

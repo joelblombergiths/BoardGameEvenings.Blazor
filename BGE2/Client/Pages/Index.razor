@@ -1,0 +1,131 @@
+﻿@page "/"
+@inject HttpClient _Client
+@inject PublicClient _PublicClient
+@inject NavigationManager _Navigation
+
+<div class="@AlertClass">
+    <p>@ResultMessage</p>
+</div>
+
+<h2 class="m-5 text-center">You never have more fun than what you make yourself</h2>
+
+<!--Edit form-->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title text-warning fw-bold" id="editModalLabel">Edit Event</h2>
+            </div>
+            <EditForm Model="@SelectedEvent" OnValidSubmit="@SaveChanges">
+                <DataAnnotationsValidator />
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <InputText class="form-control" id="name" @bind-Value="@SelectedEvent.Name" />
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Date</label>
+                        <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="@SelectedEvent.Date" class="form-control" id="date"></InputDate>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col d-flex justify-content-start align-items-start">
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#confirmModal">Delete&nbsp;Event</button>
+                            </div>
+                            <div class="col d-flex justify-content-end align-items-end">
+                                <button type="button" class="btn btn-secondary me-1" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Save&nbsp;Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+<!-- edit -->
+<!-- Confirm delete form -->
+<div class="modal fade" id="confirmModal" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title text-danger fw-bold">Delete Event</h2>
+            </div>
+            <div class="modal-body text-body">
+                <p>Are you sure you want to delete this event?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @onclick="DeleteEvent">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- delete -->
+<!-- Main table -->
+<div class="container-fluid">
+    <div class="col-12 col-lg-8 mx-auto bg-white shadow-lg">
+        <table class="table table-striped table-hover">
+            <thead class="purpleHeader">
+                <tr>
+                    <th>Name</th>
+                    <th>Date</th>
+                    <th>Prefered Game</th>
+                    <th>&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody class="fw-bold">
+                @if (AllEvents == null)
+                {
+                    <tr>
+                        <td colspan="4">
+                            <p>[Loading Events...]</p>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    @if (AllEvents?.Count > 0)
+                    {
+                        <Virtualize Items="AllEvents" Context="e">
+                            <tr>
+                                <td title="Click to open event" role="button" @onclick="@(() => _Navigation.NavigateTo($"Join/{e.Id}"))">
+                                    @e.Name
+                                </td>
+                                <td title="Click to open event" role="button" @onclick="@(() => _Navigation.NavigateTo($"Join/{e.Id}"))">
+                                    @DateTime.Parse(e.Date).ToString("f")
+                                </td>
+                                <td title="Click to open event" role="button" @onclick="@(() => _Navigation.NavigateTo($"Join/{e.Id}"))">
+                                    @e.TopVote
+                                </td>
+                                <td>
+                                    <AuthorizeView>
+                                        <Authorized>
+                                            @if (IsAdmin())
+                                            {
+                                                <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#editModal" @onclick="@(() => SelectEvent(e.Id))">
+                                                    <i class="fa-solid fa-pen"></i>
+                                                </button>
+                                            }
+                                        </Authorized>
+                                    </AuthorizeView>
+                                </td>
+                            </tr>
+                        </Virtualize>
+                    }
+                    else
+                    {
+                        <tr title="Click to create new event" role="button" @onclick="@(() => _Navigation.NavigateTo("Add"))">
+                            <td colspan="4">
+                                <p>[Create new Event]</p>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- Main -->

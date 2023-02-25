@@ -1,0 +1,142 @@
+﻿@page "/Join/{Id?}"
+@attribute [Authorize]
+@inject HttpClient _Client
+@inject PublicClient _PublicClient
+@inject NavigationManager _Navigation
+
+<div class="@AlertClass">
+    <p>@ResultMessage</p>
+</div>
+
+<!-- Confirm delete form -->
+<div class="modal fade" id="confirmModal" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title text-danger fw-bold">Remove Attendee</h2>
+            </div>
+            <div class="modal-body text-body">
+                <p>Are you sure ?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @onclick="DeleteAttendee">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- delete -->
+
+<section id="EventInfo">
+    <div class="container my-5">
+        <div class="col-12 col-lg-8 mx-auto bg-white shadow-lg">
+            <table class="table">
+                <thead class="purpleHeader">
+                    <tr>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Most Prefered Game</th>
+                    </tr>
+                </thead>
+                <tbody class="fw-bold">
+                    <tr>
+                        <td>@SelectedEvent?.Name</td>
+                        <td>@DateTime.Parse(SelectedEvent.Date).ToString("f")</td>
+                        <td>@SelectedEvent?.TopVote</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<br>
+<section id="Attend">
+    <h3>Join the Dark Side, we got cookies</h3>
+    <div class="container text-dark">
+        <div class="col-8 col-lg-6 mx-auto bg-white shadow-lg rounded-5">
+            <EditForm Model="@addAttendee" class="bg-white rounded-5 p-5" OnValidSubmit="@Submit">
+                <DataAnnotationsValidator />
+                <div class="mb-4">
+                    <label for="name" class="form-label">Your name</label>
+                    <InputText @bind-Value="@addAttendee.Name" class="form-control" id="name"></InputText>
+                    <ValidationMessage For="@(() => addAttendee.Name)" class="text-danger" />
+                </div>
+                <div class="mb-4">
+                    <label for="vote" class="form-label" htmlfor="vote">Vote for a game</label>
+                    <InputSelect class="form-control" style="text-align-last: center;" @bind-Value="@addAttendee.Vote" id="vote">
+                        <option>Any</option>
+                        @foreach (string game in BoardGames)
+                        {
+                            <option>@game</option>
+                        }
+                    </InputSelect>
+                </div>
+                <button type="submit" class="btn btn-primary">Join</button>
+            </EditForm>
+        </div>
+    </div>
+</section>
+<br>
+
+<section id="attendees">
+    <div class="container my-5">
+        <div class="col-12 col-lg-8 mx-auto bg-white shadow-lg ">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Vote</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody class="fw-bold">
+                    @if (eventAttendees == null)
+                    {
+                        <tr>
+                            <td colspan="3">
+                                <p>[Loading Attendees...]</p>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @if (eventAttendees.Count > 0)
+                        {
+                            <Virtualize Items="eventAttendees" Context="attendee">
+                                <tr>
+                                    <td>@attendee.Name</td>
+                                    <td>@attendee.Vote</td>
+                                    <td>
+                                        <AuthorizeView>
+                                            <Authorized>
+                                                @if (IsAdmin())
+                                                {
+                                                    <button type="button"
+                                                class="btn btn-outline-dark"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#confirmModal"
+                                                @onclick="@(() => selectedAttendee = attendee.Id)">
+                                                        <i class="fa-solid fa-trash-can"></i>
+                                                    </button>
+                                                }
+                                            </Authorized>
+                                        </AuthorizeView>
+                                    </td>
+                                </tr>
+                            </Virtualize>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="3">
+                                    <p>Partypoopers :(</p>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
