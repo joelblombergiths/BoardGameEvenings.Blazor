@@ -28,7 +28,7 @@ jobs:
         name: Application_Artifact
         path: /home/runner/work/BoardGameEvenings.Blazor/BoardGameEvenings.Blazor/release/
         
-    - name: Commit wwwroot to GitHub Pages
+    - name: Commit to GitHub Pages
       uses: actions/deploy-pages@v1.2.4
       with:
         token: ${{ github.token }}
