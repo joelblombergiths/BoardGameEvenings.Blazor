@@ -20,9 +20,14 @@ jobs:
 
     - name: Publish .NET Core Project
       run: dotnet publish BGE2/Server/BGE2.Server.csproj -c Release -o release --nologo
-
+      
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: Application_Artifact
+        path: /home/runner/work/BoardGameEvenings.Blazor/BoardGameEvenings.Blazor/release/
+        
     - name: Commit wwwroot to GitHub Pages
       uses: actions/deploy-pages@v1.2.4
       with:
         token: ${{ github.token }}
-        artifact_name: release
