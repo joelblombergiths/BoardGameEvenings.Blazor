@@ -19,8 +19,6 @@ jobs:
       run: dotnet publish BGE2/Server/BGE2.Server.csproj -c Release -o release --nologo
 
     - name: Commit wwwroot to GitHub Pages
-      uses: JamesIves/github-pages-deploy-action@3.7.1
+      uses: actions/deploy-pages@v1.2.4
       with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        BRANCH: gh-pages
-        FOLDER: release/wwwroot
+        token: ${{ github.token }}
