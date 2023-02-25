@@ -22,6 +22,6 @@ jobs:
         uses: avinal/github-pages-deploy-action@v0.9
         with:
           GITHUB_TOKEN: ${{ github.token }}
-          BRANCH: gh-pages
+          PAGES_BRANCH: gh-pages
           FOLDER: release/wwwroot
       
