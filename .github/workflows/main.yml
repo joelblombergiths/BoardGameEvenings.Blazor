@@ -20,27 +20,16 @@ jobs:
       uses: actions/setup-dotnet@v3.0.3
       with:
         dotnet-version: 7.0.x
+        
+    - name: Install .NET WASM Build Tools
+      run: dotnet workload install wasm-tools
 
     - name: Publish .NET Core Project
-      run: dotnet publish BGE2/Server/BGE2.Server.csproj -c Release -o release --nologo
+      run: dotnet publish BGE2/Server/BGE2.Server.csproj -c:Release -p:GHPages=true -o dist/web --nologo
     
-    - name: Change base-tag in index.html from / to BlazorGitHubPagesDemo
-      run: sed -i 's/<base href="\/" \/>/<base href="\/BoardGameEvenings.Blazor\/" \/>/g' release/wwwroot/index.html
-    
-    - name: copy index.html to 404.html
-      run: cp release/wwwroot/index.html release/wwwroot/404.html
-
-    - name: Add .nojekyll file
-      run: touch release/wwwroot/.nojekyll
-      
-    - name: Upload Build Artifact
-      uses: actions/upload-pages-artifact@v1.0.7
+    - name: Deploy to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@v4.4.1
       with:
-        name: github-pages
-        path: _site/
-        
-    - name: Commit to GitHub Pages
-      uses: actions/deploy-pages@v1.2.4
-      with:
-        token: ${{ github.token }}
-        artifact_name: github-pages
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BRANCH: gh-pages
+        FOLDER: dist/web/wwwroot
