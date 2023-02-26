@@ -29,13 +29,13 @@ jobs:
       run: dotnet publish BGE2/Server/BGE2.Server.csproj -c:Release -p:GHPages=true -o dist/web --nologo
       
     - name: Change base-tag in index.html from / to ghpages
-      run: sed -i 's/<base href="\/" \/>/<base href="\/BoardGameEvenings.Blazor\/" \/>/g' release/wwwroot/index.html
+      run: sed -i 's/<base href="\/" \/>/<base href="\/BoardGameEvenings.Blazor\/" \/>/g' dist/web/wwwroot/index.html
     
     - name: copy index.html to 404.html
-      run: cp release/wwwroot/index.html release/wwwroot/404.html
+      run: cp dist/web/wwwroot/index.html dist/web/wwwroot/404.html
 
     - name: Add .nojekyll file
-      run: touch release/wwwroot/.nojekyll
+      run: touch dist/web/wwwroot/.nojekyll
     
     - name: Deploy to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@v4.4.1
